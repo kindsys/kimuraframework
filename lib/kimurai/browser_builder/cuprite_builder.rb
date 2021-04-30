@@ -22,7 +22,8 @@ module Kimurai::BrowserBuilder
       # Register driver
       Capybara.register_driver :cuprite do |app|
         # Create driver options
-        # opts = { args: %w[--disable-gpu --no-sandbox --disable-translate] }
+        opts = @config[:ferrum] || {}
+        opts[:browser_options] ||= {}
 
         # Provide custom chrome browser path:
         # if chrome_path = Kimurai.configuration.selenium_chrome_path
@@ -82,13 +83,26 @@ module Kimurai::BrowserBuilder
         #   logger.warn "BrowserBuilder: (selenium_chrome): custom headers doesn't supported by selenium, skipped"
         # end
 
-        # if user_agent = @config[:user_agent].presence
-        #   user_agent_string = (user_agent.class == Proc ? user_agent.call : user_agent).strip
-        #   driver_options.args << "--user-agent='#{user_agent_string}'"
-        #   logger.debug "BrowserBuilder (cuprite): enabled custom user_agent"
-        # end
+        if user_agent = @config[:user_agent].presence
+          user_agent_string = (user_agent.class == Proc ? user_agent.call : user_agent).strip
+          opts[:browser_options][:"user-agent"] = user_agent_string
+          logger.debug "BrowserBuilder (cuprite): enabled custom user_agent"
+        end
+
+        # Headless mode (simplified)
+        if ENV["HEADLESS"] != "false"
+          opts[:headless] = true
+          # Required for dockerized Cuprite/Ferrum setups. Assuming Docker if headless.
+          if ENV["FERRUM_NO_SANDBOX"] != "false"
+            opts[:browser_options][:"no-sandbox"] = nil
+          end
+        end
 
         # Headless mode
+        # NOTE: might need the virtual display in the future, so leaving this here. the ferrum option
+        # to enable should be:
+        # opts[:xvfb] = true
+
         # if ENV["HEADLESS"] != "false"
         #   if @config[:headless_mode] == :virtual_display
         #     if Gem::Platform.local.os == "linux"
@@ -113,7 +127,8 @@ module Kimurai::BrowserBuilder
         # service = Selenium::WebDriver::Service.chrome(path: chromedriver_path)
         # Capybara::Selenium::Driver.new(app, browser: :chrome, options: driver_options, service: service)
         # Capybara::Cuprite::Driver.new(app, window_size: window_size[1200, 800])
-        Capybara::Cuprite::Driver.new(app)
+
+        Capybara::Cuprite::Driver.new(app, opts)
       end
 
       # Create browser instance (Capybara session)
