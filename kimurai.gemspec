@@ -32,7 +32,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "capybara", ">= 2.15", "< 4.0"
   spec.add_dependency "capybara-mechanize"
   spec.add_dependency "poltergeist"
-  spec.add_dependency "selenium-webdriver"
+  spec.add_dependency "selenium-webdriver", "3.142.7"
   spec.add_dependency "cuprite"
 
   spec.add_dependency "headless"
