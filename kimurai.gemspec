@@ -32,6 +32,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency "capybara", ">= 2.15", "< 4.0"
   spec.add_dependency "capybara-mechanize"
   spec.add_dependency "poltergeist"
+  # lock selenium-webdriver version as workaround for assume_untrusted_certificate_issuer NoMethodError for now
+  # TO-DO: come back around and either fix kimurai to not rely on that method or bump selenium-webdriver when they fix it
   spec.add_dependency "selenium-webdriver", "3.142.7"
   spec.add_dependency "cuprite"
 
