@@ -88,6 +88,13 @@ module Kimurai::BrowserBuilder
           logger.debug "BrowserBuilder (selenium_chrome): enabled custom user_agent"
         end
 
+        if @config[:additional_driver_opts].present?
+          @config[:additional_driver_opts].each do |opt|
+            driver_options.args << opt.strip
+          end
+          logger.debug "BrowserBuilder (selenium_chrome): added additional args #{@config[:additional_driver_opts].to_s} to driver options"
+        end
+
         # Headless mode
         if ENV["HEADLESS"] != "false"
           if @config[:headless_mode] == :virtual_display
