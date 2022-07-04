@@ -90,7 +90,7 @@ module Kimurai::BrowserBuilder
 
         if @config[:additional_driver_opts].present?
           @config[:additional_driver_opts].each do |opt|
-            driver_options.args << opt.strip
+            driver_options.add_argument(opt.strip)
           end
           logger.debug "BrowserBuilder (selenium_chrome): added additional args #{@config[:additional_driver_opts].to_s} to driver options"
         end
