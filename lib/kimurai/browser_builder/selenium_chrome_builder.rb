@@ -22,7 +22,7 @@ module Kimurai::BrowserBuilder
       # Register driver
       Capybara.register_driver :selenium_chrome do |app|
         # Create driver options
-        opts = { args: %w[--disable-gpu --no-sandbox --disable-translate] }
+        opts = { args: %w[--disable-gpu --no-sandbox --disable-translate], exclude_switches: ["enable-automation"] }
 
         # Provide custom chrome browser path:
         if chrome_path = Kimurai.configuration.selenium_chrome_path
@@ -95,13 +95,6 @@ module Kimurai::BrowserBuilder
           logger.info "BrowserBuilder (selenium_chrome): added additional args #{@config[:additional_driver_opts].to_s} to driver options"
         end
 
-        if @config[:exclude_switches].present?
-          @config[:exclude_switches].each do |switch|
-            driver_options.exclude_switches << switch.strip
-          end
-          logger.info "BrowserBuilder (selenium_chrome): added exclude switches #{driver_options.exclude_switches}"
-        end
-
         # Headless mode
         if ENV["HEADLESS"] != "false"
           if @config[:headless_mode] == :virtual_display
@@ -125,6 +118,7 @@ module Kimurai::BrowserBuilder
 
         chromedriver_path = Kimurai.configuration.chromedriver_path || "/usr/local/bin/chromedriver"
         service = Selenium::WebDriver::Service.chrome(path: chromedriver_path)
+        logger.info "BrowserBuilder (selenium_chrome): driver options are #{driver_options.to_s}"
         Capybara::Selenium::Driver.new(app, browser: :chrome, options: driver_options, service: service)
       end
 
