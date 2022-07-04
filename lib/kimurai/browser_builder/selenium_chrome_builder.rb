@@ -92,7 +92,12 @@ module Kimurai::BrowserBuilder
           @config[:additional_driver_opts].each do |opt|
             driver_options.add_argument(opt.strip)
           end
-          logger.debug "BrowserBuilder (selenium_chrome): added additional args #{@config[:additional_driver_opts].to_s} to driver options"
+          logger.info "BrowserBuilder (selenium_chrome): added additional args #{@config[:additional_driver_opts].to_s} to driver options"
+        end
+
+        if @config[:exclude_switches].present?
+          driver_options.exclude_switches = @config[:exclude_switches].strip
+          logger.info "BrowserBuilder (selenium_chrome): added exclude switches #{driver_options.exclude_switches}"
         end
 
         # Headless mode
