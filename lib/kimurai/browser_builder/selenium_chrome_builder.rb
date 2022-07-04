@@ -96,7 +96,9 @@ module Kimurai::BrowserBuilder
         end
 
         if @config[:exclude_switches].present?
-          driver_options.exclude_switches = @config[:exclude_switches].strip
+          @config[:exclude_switches].each do |switch|
+            driver_options.exclude_switches << switch.strip
+          end
           logger.info "BrowserBuilder (selenium_chrome): added exclude switches #{driver_options.exclude_switches}"
         end
 
